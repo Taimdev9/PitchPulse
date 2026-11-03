@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="PitchPulse — Football match tracker by Taimdev9 / TRL TEAM FOR DEVELOPMENT">
+<title>PitchPulse — TRL</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js" defer></script>
+</head>
+<body>
+
+<!-- ==================== TERMS SCREEN ==================== -->
+<div id="termsScreen" class="terms-screen">
+  <div class="terms-card">
+    <div class="terms-header">
+      <div class="terms-logo">⚽</div>
+      <h1 id="termsTitle">Terms of Use</h1>
+      <p class="terms-sub" id="termsSub">TRL TEAM FOR DEVELOPMENT — Taimdev9</p>
+    </div>
+    <div class="terms-body" id="termsBody"></div>
+    <div class="terms-footer">
+      <label class="terms-check">
+        <input type="checkbox" id="termsAgree">
+        <span id="termsAgreeText">I have read and agree to the Terms of Use.</span>
+      </label>
+      <button class="btn btn-primary" id="termsContinue" disabled>
+        <span id="termsContinueText">Continue</span> →
+      </button>
+      <p class="terms-credit">Developed by <strong>Taimdev9</strong> — TRL TEAM FOR DEVELOPMENT</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== LOADER ==================== -->
+<div id="loader" class="loader hidden">
+  <div class="loader-scene">
+    <div class="ground"></div>
+    <div class="goal-text" id="goalText">GOAL!</div>
+    <div class="person">
+      <div class="head"></div><div class="torso"></div>
+      <div class="limb arm-l"></div><div class="limb arm-r"></div>
+      <div class="limb leg-l"></div><div class="limb leg-r"></div>
+    </div>
+    <div class="ball"></div>
+  </div>
+  <div class="loader-info">
+    <div class="loader-brand">PITCHPULSE</div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+    <div class="loader-credit">Developed by <strong>Taimdev9</strong> — TRL TEAM FOR DEVELOPMENT</div>
+    <button class="loader-continue" id="loaderContinue">Continue →</button>
+  </div>
+</div>
+
+<!-- ==================== APP ==================== -->
+<div id="app" class="app">
+
+  <!-- ---------- SETUP ---------- -->
+  <div id="setupScreen" class="screen">
+    <header class="top-nav">
+      <div class="brand"><div class="brand-icon">⚽</div><span id="brandName">PitchPulse</span></div>
+      <div class="nav-actions">
+        <button class="icon-btn" id="themeBtn" title="Theme">🌓</button>
+        <button class="icon-btn" id="historyBtn" title="History">📜</button>
+        <button class="icon-btn" id="leaderboardBtn" title="Leaderboard">🏆</button>
+        <button class="lang-btn" id="langBtn">عربي</button>
+      </div>
+    </header>
+
+    <div class="hero">
+      <h1 id="heroTitle">Ready for kickoff?</h1>
+      <p id="heroSub">Set up your teams and let the celebrations begin.</p>
+    </div>
+
+    <div class="setup-grid">
+      <div class="team-card light">
+        <div class="team-card-head"><div class="team-badge">A</div><div class="label" id="lblTeamA">Team A</div></div>
+        <div class="field"><label id="lblTeamNameA">Team name</label><input class="inp" id="nameA" value="Team A"></div>
+        <div class="field"><label id="lblPlayersA">Players (comma separated)</label><input class="inp" id="playersA" placeholder="Ahmed, Sami, Khaled"></div>
+      </div>
+      <div class="team-card dark">
+        <div class="team-card-head"><div class="team-badge">B</div><div class="label" id="lblTeamB">Team B</div></div>
+        <div class="field"><label id="lblTeamNameB">Team name</label><input class="inp" id="nameB" value="Team B"></div>
+        <div class="field"><label id="lblPlayersB">Players (comma separated)</label><input class="inp" id="playersB" placeholder="Omar, Yousef, Ziad"></div>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="settings-row">
+        <div class="settings-label"><div class="title" id="lblDuration">Match duration</div><div class="desc" id="lblDurationDesc">Type minutes — timer counts down</div></div>
+        <input class="settings-input" id="matchDuration" type="number" min="1" max="180" value="10">
+        <span class="unit" id="lblMin">min</span>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label"><div class="title" id="lblRecordVideo">Record match video</div><div class="desc" id="lblRecordVideoDesc">Records the camera during the match</div></div>
+        <label class="toggle"><input type="checkbox" id="recordVideo"><span></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label"><div class="title" id="lblSaveRoster">Save roster</div><div class="desc" id="lblSaveRosterDesc">Save team names & players for next time</div></div>
+        <label class="toggle"><input type="checkbox" id="saveRoster" checked><span></span></label>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" id="randomBtn">🎲 <span id="lblRandomTeams">Random Teams</span></button>
+    <button class="btn btn-primary" id="startBtn"><span id="lblStartMatch">Start Match</span> →</button>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="exportBtn" style="flex:1"><span id="lblExport">⬇ Export</span></button>
+      <button class="btn btn-ghost" id="importBtn" style="flex:1"><span id="lblImport">⬆ Import</span></button>
+      <input type="file" id="importFile" accept=".json" hidden>
+    </div>
+
+    <footer class="footer">© 2025 <strong>Taimdev9</strong> — TRL TEAM FOR DEVELOPMENT</footer>
+  </div>
+
+  <!-- ---------- MATCH ---------- -->
+  <div id="matchScreen" class="screen hidden">
+    <div class="topbar">
+      <div class="clock-wrap">
+        <span class="period-tag" id="periodTag">H1</span>
+        <span class="clock" id="clock">00:00</span>
+        <button class="icon-btn" id="playBtn">▶</button>
+      </div>
+      <div class="nav-actions">
+        <button class="icon-btn" id="soundBtn" title="Sound">🔊</button>
+        <button class="icon-btn" id="halfBtn" title="Half time">⏸️</button>
+        <button class="icon-btn" id="endBtn" title="End" style="font-size:12px">⏹</button>
+        <button class="icon-btn" id="fullscreenBtn" title="Fullscreen">⛶</button>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="team team-a">
+        <div class="tname" id="tname0">—</div>
+        <div class="score" id="score0">0</div>
+        <button class="goal-btn" data-goal="0">⚽ <span id="goalBtnA">Goal</span></button>
+      </div>
+      <div class="vs">VS</div>
+      <div class="team team-b">
+        <div class="tname" id="tname1">—</div>
+        <div class="score" id="score1">0</div>
+        <button class="goal-btn" data-goal="1">⚽ <span id="goalBtnB">Goal</span></button>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <button class="qa-btn yellow" id="yellowCardBtn">🟨 <span id="lblYellow">Yellow</span></button>
+      <button class="qa-btn red" id="redCardBtn">🟥 <span id="lblRed">Red</span></button>
+    </div>
+
+    <div class="section-title"><span id="lblMatchFeed">Match feed</span></div>
+    <div class="timeline" id="timeline"></div>
+
+    <div class="section-title"><span id="lblPhotos">Celebration photos</span><span id="shotCount" class="section-count"></span></div>
+    <div class="gallery" id="gallery"></div>
+
+    <footer class="footer">© 2025 <strong>Taimdev9</strong> — TRL TEAM FOR DEVELOPMENT</footer>
+  </div>
+
+  <!-- ---------- STATS ---------- -->
+  <div id="statsScreen" class="screen hidden">
+    <div class="stats-hero">
+      <div class="stats-badge">🏁</div>
+      <h1 id="lblFullTime">Full Time</h1>
+      <p id="lblMatchEnded">Here are your match stats</p>
+    </div>
+    <div class="stats-final">
+      <div class="stats-team-name" id="statsTeamA">Team A</div>
+      <div class="stats-final-score"><span id="statsScoreA">0</span><span class="dash">-</span><span id="statsScoreB">0</span></div>
+      <div class="stats-team-name" id="statsTeamB">Team B</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label" id="lblTopScorer">Top Scorer</div><div class="stat-value" id="statTopScorer">—</div></div>
+      <div class="stat-card"><div class="stat-label" id="lblTotalGoals">Total Goals</div><div class="stat-value" id="statTotalGoals">0</div></div>
+      <div class="stat-card"><div class="stat-label" id="lblPhotosStat">Photos</div><div class="stat-value" id="statPhotos">0</div></div>
+      <div class="stat-card"><div class="stat-label" id="lblMatchTime">Match Time</div><div class="stat-value" id="statMatchTime">00:00</div></div>
+    </div>
+
+    <div class="stats-section">
+      <h3 id="lblMotm">Man of the Match</h3>
+      <select class="inp" id="motmSelect"></select>
+    </div>
+
+    <div class="stats-section">
+      <h3 id="lblCharts">Charts</h3>
+      <div class="chart-wrap"><canvas id="goalsChart" height="180"></canvas></div>
+    </div>
+
+    <div class="stats-section">
+      <h3 id="lblAllGoals">All Goals</h3>
+      <div class="timeline" id="statsGoals"></div>
+    </div>
+
+    <div class="stats-section">
+      <h3 id="lblShareCard">Share Card</h3>
+      <div class="share-wrap">
+        <canvas id="shareCanvas" width="600" height="800"></canvas>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="downloadShareBtn" style="flex:1"><span id="lblDownloadCard">⬇ Card</span></button>
+        <button class="btn btn-ghost" id="qrBtn" style="flex:1"><span id="lblShowQR">📱 QR</span></button>
+      </div>
+      <div id="qrContainer" class="qr-container hidden"></div>
+    </div>
+
+    <div class="stats-actions">
+      <button class="btn btn-primary hidden" id="downloadVideoBtn">📥 <span id="lblDownloadVideo">Download Video</span></button>
+      <button class="btn btn-secondary" id="downloadSummaryBtn">📋 <span id="lblCopySummary">Copy Summary</span></button>
+      <button class="btn btn-ghost" id="statsNewMatchBtn"><span id="lblNewMatch">New Match</span></button>
+    </div>
+
+    <footer class="footer">© 2025 <strong>Taimdev9</strong> — TRL TEAM FOR DEVELOPMENT</footer>
+  </div>
+
+  <!-- ---------- HISTORY ---------- -->
+  <div id="historyScreen" class="screen hidden">
+    <header class="top-nav">
+      <div class="brand"><div class="brand-icon">📜</div><span id="lblHistoryTitle">Match History</span></div>
+      <button class="icon-btn" id="historyClose">✕</button>
+    </header>
+    <div id="historyList"></div>
+  </div>
+
+  <!-- ---------- LEADERBOARD ---------- -->
+  <div id="leaderboardScreen" class="screen hidden">
+    <header class="top-nav">
+      <div class="brand"><div class="brand-icon">🏆</div><span id="lblLeaderboardTitle">Leaderboard</span></div>
+      <button class="icon-btn" id="leaderboardClose">✕</button>
+    </header>
+    <div id="leaderboardList"></div>
+  </div>
+
+</div>
+
+<!-- ==================== REC PREVIEW ==================== -->
+<div id="recPreview" class="rec-preview hidden">
+  <video id="recVideo" autoplay playsinline muted></video>
+  <div class="rec-badge"><span class="rec-dot"></span>REC</div>
+</div>
+
+<!-- ==================== RANDOM MODAL ==================== -->
+<div class="modal hidden" id="randomModal">
+  <div class="sheet">
+    <h2 id="lblRandomTitle">Random Teams</h2>
+    <p class="hint" id="lblRandomHint">Pick a format and enter all players.</p>
+    <label class="field-label" id="lblFormat">Format</label>
+    <div class="chips" id="formatChips">
+      <button class="chip on" data-fmt="1">1v1</button><button class="chip" data-fmt="2">2v2</button>
+      <button class="chip" data-fmt="3">3v3</button><button class="chip" data-fmt="4">4v4</button>
+      <button class="chip" data-fmt="5">5v5</button><button class="chip" data-fmt="6">6v6</button>
+    </div>
+    <div class="field">
+      <label id="lblAllPlayers">All players (comma separated)</label>
+      <input class="inp" id="allPlayers" placeholder="Ahmed, Sami, Khaled, Omar, Yousef, Ziad">
+    </div>
+    <div class="wheel-wrap">
+      <div class="wheel-stage">
+        <div class="wheel-pointer">▼</div>
+        <div class="wheel" id="wheel"><div class="wheel-empty" id="lblWheelEmpty">Enter players to spin</div></div>
+      </div>
+      <div class="spin-result" id="spinResult">
+        <div class="result-col a"><div class="result-head"><div class="badge">A</div><span id="lblResultA">Team A</span></div><div class="result-list" id="resultA"></div></div>
+        <div class="result-col b"><div class="result-head"><div class="badge">B</div><span id="lblResultB">Team B</span></div><div class="result-list" id="resultB"></div></div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn btn-ghost" id="cancelRandom"><span id="lblCancel">Cancel</span></button>
+      <button class="btn btn-primary" id="spinBtn">🎲 <span id="lblSpin">Spin</span></button>
+    </div>
+    <div class="row hidden" id="applyRow">
+      <button class="btn btn-ghost" id="spinAgainBtn"><span id="lblSpinAgain">Spin Again</span></button>
+      <button class="btn btn-primary" id="applyBtn"><span id="lblApply">Apply to Teams</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GOAL MODAL ==================== -->
+<div class="modal hidden" id="goalModal">
+  <div class="sheet">
+    <h2 id="modalTitle">Who scored?</h2>
+    <p class="hint" id="modalHint"></p>
+    <div class="field">
+      <label id="lblPlayer">Player</label>
+      <select class="inp" id="scorerSelect"></select>
+      <input class="inp hidden" id="scorerCustom" placeholder="Type name…">
+    </div>
+    <div class="field">
+      <label id="lblAssist">Assist (optional)</label>
+      <select class="inp" id="assistSelect"></select>
+      <input class="inp hidden" id="assistCustom" placeholder="Type name…">
+    </div>
+    <div class="field">
+      <label id="lblGoalType">Goal type</label>
+      <div class="chips" id="typeChips">
+        <button class="chip on" data-type="regularGoal" id="lblRegular">Regular</button>
+        <button class="chip" data-type="penalty" id="lblPenalty">Penalty</button>
+        <button class="chip" data-type="freeKick" id="lblFreeKick">Free kick</button>
+        <button class="chip" data-type="header" id="lblHeader">Header</button>
+        <button class="chip" data-type="bicycle" id="lblBicycle">Bicycle</button>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn btn-ghost" id="cancelGoal"><span id="lblCancelGoal">Cancel</span></button>
+      <button class="btn btn-primary" id="confirmGoal">🎉 <span id="lblRegisterGoal">Register Goal</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CARD MODAL ==================== -->
+<div class="modal hidden" id="cardModal">
+  <div class="sheet">
+    <h2 id="cardModalTitle">Card</h2>
+    <p class="hint" id="cardModalHint"></p>
+    <div class="field">
+      <label id="lblCardPlayer">Player</label>
+      <select class="inp" id="cardPlayerSelect"></select>
+      <input class="inp hidden" id="cardPlayerCustom" placeholder="Type name…">
+    </div>
+    <div class="row">
+      <button class="btn btn-ghost" id="cancelCard"><span id="lblCancelCard">Cancel</span></button>
+      <button class="btn btn-primary" id="confirmCard">✓ <span id="lblConfirm">Confirm</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CELEBRATION ==================== -->
+<div class="celebrate hidden" id="celebrate">
+  <canvas id="confetti"></canvas>
+  <div class="shot-count hidden" id="liveCount">0 📸</div>
+  <div class="cel-inner">
+    <div class="cel-goal" id="celGoalText">GOAL!</div>
+    <div class="cel-name" id="celName"></div>
+    <div class="cel-meta" id="celMeta"></div>
+    <div class="cam-wrap" id="camWrap">
+      <video id="cam" autoplay playsinline muted></video>
+      <button class="snap" id="snapBtn">📸 <span id="lblSnap">Shoot & Save</span></button>
+    </div>
+    <button class="cel-close" id="celClose"><span id="lblContinueMatch">Continue match ›</span></button>
+  </div>
+</div>
+
+<!-- ==================== FULLSCREEN BOARD ==================== -->
+<div id="fullscreenBoard" class="fullscreen-board hidden">
+  <div class="fs-team">
+    <div class="fs-name" id="fsName0">Team A</div>
+    <div class="fs-score" id="fsScore0">0</div>
+  </div>
+  <div class="fs-mid">
+    <div class="fs-clock" id="fsClock">00:00</div>
+    <div class="fs-period" id="fsPeriod">H1</div>
+  </div>
+  <div class="fs-team">
+    <div class="fs-name" id="fsName1">Team B</div>
+    <div class="fs-score" id="fsScore1">0</div>
+  </div>
+  <button class="fs-close" id="fsClose">✕</button>
+</div>
+
+<script src="script.js" defer></script>
+</body>
+      </html>
